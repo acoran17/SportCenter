@@ -1,9 +1,11 @@
 const Activity = require('./activity')
 const Facility = require('./facility')
+const Instructor = require('./instructor')
 const Service = require('./service')
 
 class SportCenter {
   #services = []
+  #instructors = []
 
   constructor (name, fee = 0, membership = 0) {
     this.name = name
@@ -52,6 +54,35 @@ class SportCenter {
 
   getActivities () {
     return this.#services.filter(service => service instanceof Activity)
+  }
+
+  getInstructors () {
+    return this.#instructors
+  }
+
+  addInstructor (instructor) {
+    if (instructor instanceof Instructor && !this.#instructors.includes(instructor)) {
+      this.#instructors.push(instructor)
+    }
+  }
+
+  removeInstructor (instructor) {
+    if (instructor instanceof Instructor && this.#instructors.includes(instructor)) {
+      const indx = this.#instructors.indexOf(instructor)
+      this.#instructors.splice(indx, 1)
+    }
+  }
+
+  listInstructorsActivities () {
+    return this.#instructors.map((i) => [i.name, ...i.ledActivities.map((a) => a.name)])
+  }
+
+  costServices () {
+    return this.#services.reduce((t, s) => t + s.calculateCost(), 0)
+  }
+
+  costInstructors () {
+    return this.#instructors.reduce((t, s) => t + s.salary, 0)
   }
 }
 
